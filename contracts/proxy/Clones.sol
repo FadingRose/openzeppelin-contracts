@@ -259,4 +259,6 @@ library Clones {
                 args
             );
     }
+    // Contract A [---]
+    // Clone B    [---|args]
 }
