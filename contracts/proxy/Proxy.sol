@@ -20,6 +20,7 @@ abstract contract Proxy {
      * This function does not return to its internal call site, it will return directly to the external caller.
      */
     function _delegate(address implementation) internal virtual {
+        // NOTE: EIP1167 Minimal Proxy Contract : a proxy invoke the delegatecall to the implementation contract
         assembly {
             // Copy msg.data. We take full control of memory in this inline assembly
             // block because it will not return to Solidity code. We overwrite the
@@ -64,6 +65,7 @@ abstract contract Proxy {
      * function in the contract matches the call data.
      */
     fallback() external payable virtual {
+        // NOTE: All function calls are delegeted by fallback()
         _fallback();
     }
 }
