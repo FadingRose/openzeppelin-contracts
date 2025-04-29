@@ -95,11 +95,18 @@ contract TransparentUpgradeableProxy is ERC1967Proxy {
     function _fallback() internal virtual override {
         if (msg.sender == _proxyAdmin()) {
             if (msg.sig != ITransparentUpgradeableProxy.upgradeToAndCall.selector) {
+                // NOTE: Transparent Pattern
+                // To solve function selector clashes,
+                // admin can invoke the upgradeToAndCall method ONLY
                 revert ProxyDeniedAdminAccess();
             } else {
                 _dispatchUpgradeToAndCall();
             }
         } else {
+            // NOTE: Transparent Pattern
+            // If the `implement_proxy` has method `upgradeToAndCall(...)`
+            // any one can invoke the impl.upgradeToAndCall(...)
+            // Impl should never contains this
             super._fallback();
         }
     }

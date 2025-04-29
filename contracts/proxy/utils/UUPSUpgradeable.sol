@@ -6,6 +6,9 @@ pragma solidity ^0.8.22;
 import {IERC1822Proxiable} from "../../interfaces/draft-IERC1822.sol";
 import {ERC1967Utils} from "../ERC1967/ERC1967Utils.sol";
 
+// NOTE: UUPS places the upgrade logic in the Impl rather than the Proxy
+// Contract Impl is UUPSUpgradeable {...}
+
 /**
  * @dev An upgradeability mechanism designed for UUPS proxies. The functions included here can perform an upgrade of an
  * {ERC1967Proxy}, when this contract is set as the implementation behind such a proxy.
@@ -84,6 +87,7 @@ abstract contract UUPSUpgradeable is IERC1822Proxiable {
      * @custom:oz-upgrades-unsafe-allow-reachable delegatecall
      */
     function upgradeToAndCall(address newImplementation, bytes memory data) public payable virtual onlyProxy {
+        // NOTE: UUPS onlyProxy limits caller, see details in onlyProxy
         _authorizeUpgrade(newImplementation);
         _upgradeToAndCallUUPS(newImplementation, data);
     }
@@ -94,6 +98,9 @@ abstract contract UUPSUpgradeable is IERC1822Proxiable {
      */
     function _checkProxy() internal view virtual {
         if (
+            // NOTE: UUPS
+            // 1. revert if direct invoke Impl.upgradeToAndCall()
+            // 2. revert if the proxy is deprecated
             address(this) == __self || // Must be called through delegatecall
             ERC1967Utils.getImplementation() != __self // Must be called through an active proxy
         ) {

@@ -3,6 +3,8 @@
 
 pragma solidity ^0.8.20;
 
+// NOTE: EIP1822 UUPS must implement the `proxiableUUID()` function
+
 /**
  * @dev ERC-1822: Universal Upgradeable Proxy Standard (UUPS) documents a method for upgradeability through a simplified
  * proxy whose upgrades are fully controlled by the current implementation.
