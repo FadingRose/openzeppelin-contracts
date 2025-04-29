@@ -35,6 +35,8 @@ contract ERC1967Proxy is Proxy {
      * `0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc`
      */
     function _implementation() internal view virtual override returns (address) {
+        // NOTE: EIP1967 Proxy Storage Slot
+        // Proxy must store the implementation address in a specific slot
         return ERC1967Utils.getImplementation();
     }
 }

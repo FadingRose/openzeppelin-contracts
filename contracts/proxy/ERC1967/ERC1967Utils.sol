@@ -8,6 +8,14 @@ import {IERC1967} from "../../interfaces/IERC1967.sol";
 import {Address} from "../../utils/Address.sol";
 import {StorageSlot} from "../../utils/StorageSlot.sol";
 
+// NOTE: EIP1967 Proxy Storage Slot
+// 1. Specified 3 slots
+//      eip1967.proxy.implementation -> which Logical Proxy for now?
+//      eip1967.proxy.admin          -> for Transparent Pattern
+//      eip1967.proxy.beacon         -> for Beacon Pattern
+// 2. The previous `_implementation()` in `Proxy` could be implemented arbitrarily,
+//    while `EIP1967Proxy` requires it to come from a specific `slot`
+
 /**
  * @dev This library provides getters and event emitting update functions for
  * https://eips.ethereum.org/EIPS/eip-1967[ERC-1967] slots.
