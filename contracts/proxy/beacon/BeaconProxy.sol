@@ -7,6 +7,29 @@ import {IBeacon} from "./IBeacon.sol";
 import {Proxy} from "../Proxy.sol";
 import {ERC1967Utils} from "../ERC1967/ERC1967Utils.sol";
 
+// NOTE: Beacon Pattern
+// 1. Storage Slot Location
+//    Beacon address is stored in a fixed storage slot:
+//    `0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50`
+//    (Calculation method: `bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1)`)
+// 2. Workflow
+// - The proxy contract does NOT store the logic contract address directly, but rather stores the Beacon address
+// - When Proxy executes logic, it calls the Beacon contract's `implementation()` function to get the latest logic address
+// - Example call path:
+//   ```solidity
+//   address impl = Beacon(beaconAddress).implementation();
+//   (bool success, ) = impl.delegatecall(data);
+//   ```
+// 3. Upgrade Beacon
+//    After modifying the logic address in the Beacon contract, all associated proxies automatically upgrade:
+//    ```solidity
+//    // Upgrade operation (in Beacon contract)
+//    function upgradeTo(address newImplementation) external {
+//        require(msg.sender == admin);
+//        _setImplementation(newImplementation);
+//    }
+//    ```
+
 /**
  * @dev This contract implements a proxy that gets the implementation address for each call from an {UpgradeableBeacon}.
  *
